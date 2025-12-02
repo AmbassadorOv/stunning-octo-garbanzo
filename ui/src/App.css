@@ -1,0 +1,40 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.card {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px;
+  color: #282c34;
+}
+
+.error {
+  color: red;
+}
+
+.output {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px;
+  text-align: left;
+  width: 80%;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

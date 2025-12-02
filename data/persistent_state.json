@@ -1,0 +1,40 @@
+{
+  "canonical_config": {
+    "version": "1.0.0",
+    "solvency_threshold": 0.85,
+    "p_formula": "1 / (1 + complexity)",
+    "categories": [
+      "Urgent",
+      "Medium",
+      "Archive"
+    ],
+    "priority_order": {
+      "Urgent": 0,
+      "Medium": 1,
+      "Archive": 2
+    }
+  },
+  "cycle_history": [
+    {
+      "direction": "Standard A < B > C > D",
+      "timestamp": "2025-12-02T03:40:03.999359+00:00",
+      "config_hash": "84b9427bb6bdea4c96057d7c0271a200c52701141547073c3899f78c5cb5fda3",
+      "output_file": "data/sample_output.tsv",
+      "num_items": 10
+    },
+    {
+      "direction": "Standard A < B > C > D",
+      "timestamp": "2025-12-02T03:44:30.568618+00:00",
+      "config_hash": "84b9427bb6bdea4c96057d7c0271a200c52701141547073c3899f78c5cb5fda3",
+      "output_file": "data/sample_output.tsv",
+      "num_items": 10
+    },
+    {
+      "direction": "Standard A < B > C > D",
+      "timestamp": "2025-12-02T03:51:01.943890+00:00",
+      "config_hash": "84b9427bb6bdea4c96057d7c0271a200c52701141547073c3899f78c5cb5fda3",
+      "output_file": "data/sample_output.tsv",
+      "num_items": 10
+    }
+  ]
+}
