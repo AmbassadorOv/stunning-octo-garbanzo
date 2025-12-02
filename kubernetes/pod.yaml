@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: digital-agent
+  labels:
+    app: digital-agent
+spec:
+  containers:
+  - name: digital-agent
+    image: digital-agent:latest # This would be replaced with the actual image name in a real deployment
+    ports:
+    - containerPort: 5001
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: digital-agent-service
+spec:
+  selector:
+    app: digital-agent
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5001
+  type: LoadBalancer
