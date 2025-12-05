@@ -1,0 +1,7 @@
+{
+    "LATTICE_DIM": 36.0,
+    "ALPHA": 0.15,
+    "PERSISTENCE_MODE": "JSON",
+    "EMA_UNITY": 0.0,
+    "RUN_COUNT": 0
+}
