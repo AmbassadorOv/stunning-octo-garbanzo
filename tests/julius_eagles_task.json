@@ -1,0 +1,15 @@
+{
+    "task_id": "BIG-EAGLES-TSK-001",
+    "agent_type": "JULIUS",
+    "prompt": "Analyze the 'Big_Eagles_Data.csv' file. Calculate the monthly variance in project budget and generate a line chart showing the trend over the last six months.",
+    "context": {
+        "project_name": "Big Eagles Finance Reporting",
+        "priority": "HIGH"
+    },
+    "file_paths": [
+        "data/Big_Eagles_Data.csv"
+    ],
+    "steps": [
+        {"step_name": "Data Analysis", "status": "PENDING"}
+    ]
+}
