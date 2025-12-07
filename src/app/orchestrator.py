@@ -12,26 +12,23 @@ router = APIRouter()
 openai_agent = OpenAICriticAgent()
 julius_agent = JuliusAgent()
 
-# Placeholder for your AgentType Enum
-class AgentType:
-    CRITIC = "critic"
-    JULIUS = "julius"
+# Agent mapping
+agents = {
+    "critic": openai_agent,
+    "julius": julius_agent,
+}
 
 @router.post("/execute_step", response_model=StepResult)
 async def execute_step(task_policy: TaskPolicy):
-    # Determine which agent to use based on the task policy
+    """
+    Executes a task step by routing it to the appropriate agent.
+    """
     agent_type = task_policy.agent_type.lower()
+    agent = agents.get(agent_type)
 
-    if agent_type == AgentType.JULIUS:
-        # Route to the new Julius Agent for data-specific tasks
-        result = await julius_agent.execute_task(task_policy.dict())
+    if agent:
+        result = await agent.execute_task(task_policy.dict())
         return StepResult(**result)
-
-    elif agent_type == AgentType.CRITIC:
-        # Route to the existing OpenAI Critic
-        result = await openai_agent.execute_task(task_policy.dict())
-        return StepResult(**result)
-
     else:
         # Handle unknown agent types
         return StepResult(
