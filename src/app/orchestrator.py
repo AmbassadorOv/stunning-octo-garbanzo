@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from .models import TaskPolicy, StepResult
 from .agents.openai_critic import OpenAICriticAgent
 from .agents.julius_agent import JuliusAgent
+from .agents.tzimtzum_agent import TzimtzumAgent
 
 
 
@@ -11,11 +12,13 @@ router = APIRouter()
 # Initialize Agents
 openai_agent = OpenAICriticAgent()
 julius_agent = JuliusAgent()
+tzimtzum_agent = TzimtzumAgent()
 
 # Placeholder for your AgentType Enum
 class AgentType:
     CRITIC = "critic"
     JULIUS = "julius"
+    TZIMTZUM = "tzimtzum"
 
 @router.post("/execute_step", response_model=StepResult)
 async def execute_step(task_policy: TaskPolicy):
@@ -30,6 +33,11 @@ async def execute_step(task_policy: TaskPolicy):
     elif agent_type == AgentType.CRITIC:
         # Route to the existing OpenAI Critic
         result = await openai_agent.execute_task(task_policy.dict())
+        return StepResult(**result)
+
+    elif agent_type == AgentType.TZIMTZUM:
+        # Route to the Tzimtzum Agent for protocol vetting
+        result = await tzimtzum_agent.execute_task(task_policy.dict())
         return StepResult(**result)
 
     else:
