@@ -12,5 +12,5 @@ class TaskPolicy(BaseModel):
 class StepResult(BaseModel):
     task_id: str
     status: str
-    result_data: str
+    result_data: Any
     agent_name: str
