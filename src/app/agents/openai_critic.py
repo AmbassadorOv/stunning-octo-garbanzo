@@ -3,6 +3,6 @@ class OpenAICriticAgent:
         return {
             "task_id": task_policy.get("task_id"),
             "status": "SUCCESS",
-            "result_data": "This is a mock response from the OpenAI Critic agent.",
+            "result_data": {"result": "This is a mock response from the OpenAI Critic agent."},
             "agent_name": "OpenAICritic",
         }

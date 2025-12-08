@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from .models import TaskPolicy, StepResult
 from .agents.openai_critic import OpenAICriticAgent
 from .agents.julius_agent import JuliusAgent
+from .agents.kabbalah_agent import KabbalahAgent
 
 
 
@@ -11,11 +12,13 @@ router = APIRouter()
 # Initialize Agents
 openai_agent = OpenAICriticAgent()
 julius_agent = JuliusAgent()
+kabbalah_agent = KabbalahAgent()
 
 # Placeholder for your AgentType Enum
 class AgentType:
     CRITIC = "critic"
     JULIUS = "julius"
+    KABBALAH = "kabbalah"
 
 @router.post("/execute_step", response_model=StepResult)
 async def execute_step(task_policy: TaskPolicy):
@@ -32,11 +35,16 @@ async def execute_step(task_policy: TaskPolicy):
         result = await openai_agent.execute_task(task_policy.dict())
         return StepResult(**result)
 
+    elif agent_type == AgentType.KABBALAH:
+        # Route to the Kabbalah Agent for Kabbalistic analysis
+        result = await kabbalah_agent.execute_task(task_policy.dict())
+        return StepResult(**result)
+
     else:
         # Handle unknown agent types
         return StepResult(
             task_id=task_policy.task_id,
             status="ERROR",
-            result_data=f"Unknown agent type: {agent_type}",
+            result_data={"error": f"Unknown agent type: {agent_type}"},
             agent_name="Orchestrator"
         )
