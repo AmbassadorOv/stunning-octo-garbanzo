@@ -44,14 +44,25 @@ def run_julius_test():
         print(f"[ERROR] Julius Test failed due to network/API error: {e}")
         return False
 
+def check_env_variable():
+    """Checks if the JULIUS_API_TOKEN is set."""
+    if not os.getenv("JULIUS_API_TOKEN"):
+        print("[FAILURE] JULIUS_API_TOKEN environment variable not set.")
+        return False
+    print("[SUCCESS] JULIUS_API_TOKEN is set.")
+    return True
+
 def main():
     if not wait_for_server():
         return
 
+    print("\n--- Checking for JULIUS_API_TOKEN ---")
+    env_check_success = check_env_variable()
+
     print("\n--- Running Julius 'Big Eagles' Agent Test ---")
     julius_success = run_julius_test()
 
-    if julius_success:
+    if julius_success and env_check_success:
         print("\n✅ All agent tests passed.")
     else:
         print("\n❌ One or more agent tests failed.")
