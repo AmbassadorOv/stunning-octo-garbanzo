@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from .models import TaskPolicy, StepResult
 from .agents.openai_critic import OpenAICriticAgent
 from .agents.julius_agent import JuliusAgent
+from .agents.huddle_agent import HuddleAgent
 
 
 
@@ -11,11 +12,13 @@ router = APIRouter()
 # Initialize Agents
 openai_agent = OpenAICriticAgent()
 julius_agent = JuliusAgent()
+huddle_agent = HuddleAgent()
 
 # Placeholder for your AgentType Enum
 class AgentType:
     CRITIC = "critic"
     JULIUS = "julius"
+    HUDDLE = "huddle"
 
 @router.post("/execute_step", response_model=StepResult)
 async def execute_step(task_policy: TaskPolicy):
@@ -30,6 +33,11 @@ async def execute_step(task_policy: TaskPolicy):
     elif agent_type == AgentType.CRITIC:
         # Route to the existing OpenAI Critic
         result = await openai_agent.execute_task(task_policy.dict())
+        return StepResult(**result)
+
+    elif agent_type == AgentType.HUDDLE:
+        # Route to the new Huddle Agent for Huddle AI tasks
+        result = await huddle_agent.execute_task(task_policy.dict())
         return StepResult(**result)
 
     else:
