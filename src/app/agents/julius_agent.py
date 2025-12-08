@@ -45,7 +45,7 @@ class JuliusAgent:
                 return {
                     "task_id": task_id,
                     "status": "FAILURE",
-                    "result_data": f"Julius File Upload Error: {e}",
+                    "result_data": {"error": f"Julius File Upload Error: {e}"},
                     "agent_name": "Julius"
                 }
 
@@ -70,7 +70,7 @@ class JuliusAgent:
             return {
                 "task_id": task_id,
                 "status": "SUCCESS",
-                "result_data": result_content,
+                "result_data": {"result": result_content},
                 "agent_name": "Julius"
             }
 
@@ -78,7 +78,7 @@ class JuliusAgent:
             return {
                 "task_id": task_id,
                 "status": "FAILURE",
-                "result_data": f"Julius Execution Error: {e}",
+                "result_data": {"error": f"Julius Execution Error: {e}"},
                 "agent_name": "Julius"
             }
         finally:
