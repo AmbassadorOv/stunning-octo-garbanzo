@@ -24,12 +24,12 @@ async def execute_step(task_policy: TaskPolicy):
 
     if agent_type == AgentType.JULIUS:
         # Route to the new Julius Agent for data-specific tasks
-        result = await julius_agent.execute_task(task_policy.dict())
+        result = await julius_agent.execute_task(task_policy.model_dump())
         return StepResult(**result)
 
     elif agent_type == AgentType.CRITIC:
         # Route to the existing OpenAI Critic
-        result = await openai_agent.execute_task(task_policy.dict())
+        result = await openai_agent.execute_task(task_policy.model_dump())
         return StepResult(**result)
 
     else:
