@@ -1,0 +1,15 @@
+app-1  | 2025-12-12T10:44:12.509324648Z INFO:     Started server process [1]
+smoke-test-1  | 2025-12-12T10:44:13.035299486Z [INFO] Server is up.
+app-1         | 2025-12-12T10:44:12.509378252Z INFO:     Waiting for application startup.
+app-1         | 2025-12-12T10:44:12.509714076Z INFO:     Application startup complete.
+app-1         | 2025-12-12T10:44:12.514269250Z INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+app-1         | 2025-12-12T10:44:13.027512489Z INFO:     172.18.0.3:48392 - "GET /docs HTTP/1.1" 200 OK
+app-1         | 2025-12-12T10:44:13.034583479Z Julius Agent received Task BIG-EAGLES-TSK-001. Prompt: Analyze the 'Big_Eagles_Data.csv' file. ...
+app-1         | 2025-12-12T10:44:13.034614898Z Uploading 1 files to Julius...
+app-1         | 2025-12-12T10:44:13.034619120Z Uploaded files: [{'name': 'mock_file.csv'}]
+app-1         | 2025-12-12T10:44:13.034622240Z INFO:     172.18.0.3:48404 - "POST /execute_step HTTP/1.1" 200 OK
+smoke-test-1  | 2025-12-12T10:44:13.035417716Z
+smoke-test-1  | 2025-12-12T10:44:13.035427270Z --- Running Julius 'Big Eagles' Agent Test ---
+smoke-test-1  | 2025-12-12T10:44:13.035430673Z [SUCCESS] Julius Agent (Task BIG-EAGLES-TSK-001) passed. Result snippet: This is a mock response from the Julius agent....
+smoke-test-1  | 2025-12-12T10:44:13.035434139Z
+smoke-test-1  | 2025-12-12T10:44:13.035436725Z ✅ All agent tests passed.
