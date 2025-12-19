@@ -1,7 +1,4 @@
+flask
+openai
+google-generativeai
 pytest
-fastapi
-uvicorn[standard]
-pydantic
-python-dotenv
-requests
-python-fire

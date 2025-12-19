@@ -1,60 +1,75 @@
 import requests
+import time
 import json
 import os
-import time
 
-ORCHESTRATOR_URL = "http://app:8000"
-JULIUS_TASK_FILE = 'tests/julius_eagles_task.json'
+BASE_URL = "http://localhost:8080"
 
 def wait_for_server():
     """Waits for the server to be available."""
+    print("--- Waiting for server to start ---")
+    # Using /audit as the health check endpoint
     for _ in range(30):
         try:
-            response = requests.get(f"{ORCHESTRATOR_URL}/docs")
+            response = requests.get(f"{BASE_URL}/audit")
             if response.status_code == 200:
-                print("[INFO] Server is up.")
+                print("--- Server is up ---")
                 return True
         except requests.exceptions.ConnectionError:
             pass
         time.sleep(1)
-    print("[ERROR] Server did not start in time.")
+    print("--- Server did not start in time ---")
     return False
 
-def run_julius_test():
-    """Tests the Julius Agent integration by posting a data analysis task."""
-    try:
-        with open(JULIUS_TASK_FILE, 'r') as f:
-            task_policy = json.load(f)
+def test_audit_endpoint():
+    print("--- Testing /audit endpoint ---")
+    response = requests.get(f"{BASE_URL}/audit")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["audit"] == "Success"
+    assert data["mode"] == "Bottom-to-Top"
+    print("--- GET /audit: OK ---")
 
-        task_id = task_policy['task_id']
+def test_orchestrate_endpoint():
+    print("--- Testing /orchestrate endpoint ---")
+    if not os.getenv("OPENAI_API_KEY") or not os.getenv("GEMINI_API_KEY"):
+        print("--- SKIPPING /orchestrate test: API keys not set in environment ---")
+        return
 
-        response_exec = requests.post(f"{ORCHESTRATOR_URL}/execute_step", json=task_policy)
-        response_exec.raise_for_status()
+    payload = {
+        "context_id": "test-001",
+        "prompt": "Database write errors on service payments since 03:00 UTC. Show root-cause hypotheses and minimal remediation steps.",
+        "goal": "restore payment writes within 15 minutes",
+        "max_tokens": 400,
+        "temperature": 0.1,
+        "hex_step": "A",
+        "reverse_sequence": True
+    }
 
-        result = response_exec.json()
+    response = requests.post(f"{BASE_URL}/orchestrate", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "estimate" in data
+    assert "consensus" in data
+    assert "active_nodes" in data
+    # Depending on API key validity, active_nodes could be > 0 or 0
+    print(f"--- POST /orchestrate response: {data} ---")
+    print("--- POST /orchestrate: OK ---")
 
-        if result.get('status') == 'SUCCESS' and result.get('agent_name') == 'Julius':
-            print(f"[SUCCESS] Julius Agent (Task {task_id}) passed. Result snippet: {result['result_data'][:60]}...")
-            return True
-        else:
-            print(f"[FAILURE] Julius Agent (Task {task_id}) failed. Result: {result}")
-            return False
-
-    except requests.exceptions.RequestException as e:
-        print(f"[ERROR] Julius Test failed due to network/API error: {e}")
-        return False
 
 def main():
     if not wait_for_server():
-        return
+        exit(1)
 
-    print("\n--- Running Julius 'Big Eagles' Agent Test ---")
-    julius_success = run_julius_test()
-
-    if julius_success:
-        print("\n✅ All agent tests passed.")
-    else:
-        print("\n❌ One or more agent tests failed.")
+    try:
+        test_audit_endpoint()
+        test_orchestrate_endpoint()
+        print("\n✅ All smoke tests passed.")
+    except AssertionError as e:
+        print(f"\n❌ Smoke test failed: {e}")
+        exit(1)
+    except Exception as e:
+        print(f"\n❌ An unexpected error occurred: {e}")
         exit(1)
 
 if __name__ == "__main__":

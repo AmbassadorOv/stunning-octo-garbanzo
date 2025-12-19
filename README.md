@@ -1,104 +1,57 @@
-# World-Party-Federation-Branches-managers
+# Julius Thinking Machine Orchestrator (V3)
 
-Here’s an interdisciplinary, computational science project like  Unity Theorem, quantum tunneling, and sonographic quantum linguistics theory. This structure is designed for clarity, collaboration, and ease of publication (preprint, journal, or code-based).
-
-
-
-
----
-
-## 📁 Recommended GitHub Repository Template
-
-```
-Unity-Theorem-Quantum-Linguistics/
-├── README.md
-├── docs/
-│   ├── theory_overview.md
-│   ├── section8_quantum_ai_architecture.md
-│   ├── section9_sonographic_linguistics.md
-│   └── diagrams/
-│       ├── 126d_singularity.png
-│       └── toroidal_folds.svg
-├── src/
-│   ├── sonographic_simulation/
-│   │   ├── simulate_sonography.py
-│   │   └── __init__.py
-│   ├── hipedots_hyperdunks/
-│   │   ├── blueprint_particle.py
-│   │   └── tunneling_engine.py
-│   └── utils/
-│       └── helpers.py
-├── notebooks/
-│   ├── simulation_demo.ipynb
-│   └── sonographic_shapes_analysis.ipynb
-├── tests/
-│   ├── test_sonography.py
-│   └── test_tunneling.py
-├── data/
-│   ├── sample_sonograms/
-│   │   └── aleph.wav
-│   └── results/
-│       └── simulation_output.csv
-├── LICENSE
-├── .gitignore
-├── requirements.txt
-├── environment.yml
-├── CITATION.cff
-└── references.bib
-```
-
----
-
-## 📄 README.md Template
-
-```markdown
-# Unity Theorem & Quantum Linguistics
-
-A unified framework integrating quantum information, consciousness, symbolic linguistics (sonographic Hebrew letter modeling), and AI-driven simulation using the HipeDots-Hyperdunks architecture.
+This project provides a containerized, deployable multi-agent orchestrator service that can query different AI models (specifically OpenAI and Gemini) in parallel and aggregate their responses.
 
 ## Features
 
-- **Quantum-AI Architecture**: HipeDots-Hyperdunks simulation engine for ontological tunneling.
-- **Sonographic Linguistics**: Computational modeling of ancient letter shapes and quantum sound patterns.
-- **Theory & Code**: All sections of the Unity Theorem, with computational blueprints and simulation notebooks.
-
-## Repository Structure
-
-- `docs/` — Theory sections, technical documentation, and diagrams.
-- `src/` — Source code for simulation engines and modeling.
-- `notebooks/` — Jupyter notebooks demonstrating core algorithms and results.
-- `data/` — Sample sonograms and simulation results.
-- `tests/` — Unit tests for core modules.
-- `references.bib` — References and citations.
-- `requirements.txt` / `environment.yml` — Dependencies.
+-   **Multi-Model Orchestration:** Queries OpenAI (gpt-4-turbo, gpt-4o) and Gemini (gemini-1.5-pro, gemini-1.5-flash) models in parallel.
+-   **Epistemic Aggregation:** Aggregates responses from different models to provide a consensus answer with a confidence score.
+-   **Hex 6F Workflow:** Implements a core formula for calculating an "action estimate" based on the consensus confidence.
+-   **Reverse Audit Logic:** Includes an `/audit` endpoint for reverse auditing of logs and incidents.
+-   **Containerized:** The application is fully containerized with Docker for easy deployment.
 
 ## Getting Started
 
-1. Clone the repository.
-2. Install dependencies:  
-   `pip install -r requirements.txt`  
-   or  
-   `conda env create -f environment.yml`
-3. Run sample notebooks in `notebooks/` to explore the theory and code.
+### Prerequisites
 
-## Citation
+-   Docker and Docker Compose
+-   OpenAI API Key
+-   Gemini API Key
 
-If you use this work, please cite via `CITATION.cff` or `references.bib`.
+### Running the Application
 
-## License
+1.  **Create a `.env` file:**
+    ```bash
+    cp .env.template .env
+    ```
+2.  **Edit the `.env` file:**
+    -   Add your `OPENAI_API_KEY` and `GEMINI_API_KEY`.
+3.  **Build and run the Docker container:**
+    ```bash
+    docker-compose up --build
+    ```
 
-[MIT License](LICENSE)
+### API Endpoints
+
+-   **`/orchestrate` (POST):**
+    -   The main endpoint for querying the orchestrator.
+    -   Accepts a JSON payload with a `prompt` and other parameters.
+    -   Returns an aggregated response with a consensus answer and confidence score.
+-   **`/audit` (GET):**
+    -   An endpoint for triggering the reverse audit logic.
+
+### Example Usage
+
+```bash
+curl -sS -X POST http://localhost:8080/orchestrate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "context_id":"test-001",
+    "prompt":"Database write errors on service payments since 03:00 UTC. Show root-cause hypotheses and minimal remediation steps.",
+    "goal":"restore payment writes within 15 minutes",
+    "max_tokens":400,
+    "temperature":0.1,
+    "hex_step":"A",
+    "reverse_sequence":true
+  }' | jq .
 ```
-
----
-
-## 💡 Tips
-
-- **Use `docs/` for all theory, design, and diagrams.**
-- **Keep code modular in `src/` for simulation, modeling, and utilities.**
-- **Provide demo notebooks for reproducibility.**
-- **Add a `CITATION.cff` for easy citation in scholarly work.**
-- **Include a `references.bib` for all academic references.**
-
----
-
