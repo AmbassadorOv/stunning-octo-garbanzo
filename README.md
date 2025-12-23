@@ -75,9 +75,9 @@ A unified framework integrating quantum information, consciousness, symbolic lin
 ## Getting Started
 
 1. Clone the repository.
-2. Install dependencies:  
-   `pip install -r requirements.txt`  
-   or  
+2. Install dependencies:
+   `pip install -r requirements.txt`
+   or
    `conda env create -f environment.yml`
 3. Run sample notebooks in `notebooks/` to explore the theory and code.
 
@@ -101,4 +101,3 @@ If you use this work, please cite via `CITATION.cff` or `references.bib`.
 - **Include a `references.bib` for all academic references.**
 
 ---
-
