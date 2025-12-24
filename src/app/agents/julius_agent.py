@@ -1,7 +1,6 @@
 import os
 import json
 from ..julius_api import Julius
-from .resurrection_envelope_v4 import JuliusHandshakeEngine
 
 # Pydantic models (assumed to be defined elsewhere, e.g., TaskPolicy, StepResult)
 # from ..models import TaskPolicy, StepResult
@@ -27,22 +26,6 @@ class JuliusAgent:
         :param task_policy: The TaskPolicy dict containing instructions and context.
         :return: A StepResult dict containing the Julius AI output.
         """
-        # --- PRE-EXECUTION: Run Julius Handshake Protocol v4 ---
-        print("Initiating Julius Handshake Protocol v4...")
-        handshake_engine = JuliusHandshakeEngine()
-        handshake_success, visual_wake_path = handshake_engine.run_handshake()
-
-        if not handshake_success:
-            print("[CRITICAL] Julius Handshake Protocol failed. Aborting task.")
-            return {
-                "task_id": task_policy.get('task_id', 'unknown'),
-                "status": "FAILURE",
-                "result_data": "Julius Handshake Protocol failed. Task aborted.",
-                "agent_name": "Julius"
-            }
-
-        print(f"Handshake successful. Visual Wake embed saved to: {visual_wake_path}")
-
         # --- 1. Extract necessary task parameters ---
         task_id = task_policy.get('task_id', 'unknown')
         prompt = task_policy.get('prompt', 'Analyze the provided data.')
@@ -81,12 +64,13 @@ class JuliusAgent:
             # --- 4. Format Result ---
             result_content = response.choices[0].message.content
 
-            # Add the visualization path as a new top-level key for backward compatibility
+            # Assuming Julius generates code, visualizations, and reports
+            # You might need to add logic here to download generated visualizations.
+
             return {
                 "task_id": task_id,
                 "status": "SUCCESS",
                 "result_data": result_content,
-                "confirmation_visualization_path": visual_wake_path, # New top-level key
                 "agent_name": "Julius"
             }
 
