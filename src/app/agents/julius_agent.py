@@ -81,20 +81,12 @@ class JuliusAgent:
             # --- 4. Format Result ---
             result_content = response.choices[0].message.content
 
-            # Combine the original result with the confirmation visualization path
-            final_result_data = {
-                "analysis_result": result_content,
-                "confirmation_visualization_path": svg_path
-            }
-
-
-            # Assuming Julius generates code, visualizations, and reports
-            # You might need to add logic here to download generated visualizations.
-
+            # Add the visualization path as a new top-level key for backward compatibility
             return {
                 "task_id": task_id,
                 "status": "SUCCESS",
-                "result_data": json.dumps(final_result_data),
+                "result_data": result_content,
+                "confirmation_visualization_path": svg_path, # New top-level key
                 "agent_name": "Julius"
             }
 
