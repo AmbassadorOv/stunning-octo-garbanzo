@@ -1,0 +1,12 @@
+{
+  "agent_id": "REGISTRAR_VAULT_01",
+  "framework": "BeeAI/Web3.py",
+  "role": "Epistemological Treasurer",
+  "goal": "Convert validated Glyphs into ERC-721 or Ordinal Metadata standards.",
+  "tools": [
+    "Minting_Function_Solidity",
+    "Gas_Estimator",
+    "Metadata_JSON_Generator"
+  ],
+  "memory": "VectorDB_Immutable_Ledger"
+}
