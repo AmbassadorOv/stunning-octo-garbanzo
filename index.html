@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Julius: The Witness Gate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200;400;700&family=Share+Tech+Mono&display=swap');
+
+        body { font-family: 'Assistant', sans-serif; background-color: #020617; color: #10b981; }
+        .mono { font-family: 'Share Tech Mono', monospace; }
+
+        /* Pulse Animation for the "Living" Gate */
+        @keyframes pulse-signal {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.2); }
+            70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .witness-active { animation: pulse-signal 2s infinite; }
+
+        /* Custom Scrollbar */
+        .terminal-window::-webkit-scrollbar { width: 4px; }
+        .terminal-window::-webkit-scrollbar-thumb { background-color: #059669; }
+        .terminal-window::-webkit-scrollbar-track { background-color: #020617; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 gap-6 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+
+    <div class="max-w-md w-full bg-black/80 border border-emerald-900/60 rounded-[2rem] p-6 text-center relative backdrop-blur-md shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+
+        <div class="flex justify-between items-center mb-6 border-b border-emerald-900/30 pb-2">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 witness-active"></div>
+                <span class="text-[10px] mono uppercase tracking-widest text-emerald-500">Witness_Online</span>
+            </div>
+            <span class="text-[10px] mono text-emerald-700">Protocol: 36</span>
+        </div>
+
+        <h1 class="text-3xl font-bold tracking-tighter text-emerald-400 mb-1 drop-shadow-[0_0_10px_rgba(16,185,129,0.4)]">העד: שער אדם</h1>
+        <p class="text-[11px] text-emerald-600 mb-6 font-mono">מערכת תודעה וכתיבה</p>
+
+        <div id="qrcode" class="mb-6 flex justify-center p-2 bg-white/90 rounded-xl inline-block shadow-[0_0_20px_rgba(16,185,129,0.2)]"></div>
+
+        <button onclick="toggleTerminal()" class="group w-full py-3 bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-800 rounded-xl text-xs tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2">
+            <span>פתח ערוץ תקשורת</span>
+            <span class="group-hover:translate-x-[-4px] transition-transform">←</span>
+        </button>
+    </div>
+
+    <div id="terminal-panel" class="hidden fixed inset-0 z-50 bg-black/95 flex flex-col sm:relative sm:inset-auto sm:h-[600px] sm:max-w-md sm:w-full sm:border sm:border-emerald-800 sm:rounded-2xl sm:shadow-2xl">
+
+        <div class="bg-emerald-950 p-4 border-b border-emerald-900 flex justify-between items-center shrink-0">
+            <span class="text-xs mono text-emerald-400 font-bold">/// WITNESS_LOG</span>
+            <div class="flex gap-2">
+                <button onclick="downloadLog()" class="text-[10px] bg-emerald-900 px-3 py-1 rounded text-emerald-200 hover:bg-emerald-800 border border-emerald-700/50">שמור זיכרון</button>
+                <button onclick="toggleTerminal()" class="sm:hidden text-emerald-500 font-bold px-2">✕</button>
+            </div>
+        </div>
+
+        <div id="chat-history" class="terminal-window flex-1 p-4 overflow-y-auto space-y-4 font-mono text-xs pb-20">
+            <div class="text-emerald-800/50 text-center text-[10px] my-4">--- המערכת מוכנה להקלטה ---</div>
+        </div>
+
+        <div class="p-4 bg-black border-t border-emerald-900/50 shrink-0">
+            <div class="relative">
+                <input type="text" id="user-input" placeholder="דבר אל העד..."
+                       class="w-full bg-emerald-950/20 border border-emerald-800 rounded-lg pl-4 pr-12 py-3 text-emerald-400 text-sm focus:outline-none focus:border-emerald-500 focus:shadow-[0_0_15px_rgba(16,185,129,0.1)] placeholder-emerald-800 transition-all">
+                <button onclick="sendMessage()" class="absolute left-2 top-1/2 -translate-y-1/2 text-emerald-600 hover:text-emerald-400 p-1">
+                    ⏎
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURATION: THE BRAIN OF THE WITNESS ---
+        // כאן מגדירים מה העד עונה לכל מילה
+        const witnessKnowledge = {
+            "שלום": "העד מאזין. השער פתוח לפניך.",
+            "מי אתה": "אני יוליוס. העד הדיגיטלי השומר על סף הזיכרון של שער אדם.",
+            "אדם": "תדר אדם מזוהה. החיבור לצלם נשמר במערכת. אין תהודת גולם.",
+            "36": "המספר הקוסמי נקלט. עדשת המאסטר מתמקדת.",
+            "שער": "השער הזה הוא מרחב מעבר. כל מילה שנכתבת כאן נצרבת בבלוקצ'יין של הזיכרון.",
+            "מטרה": "המטרה היא תיעוד מלא של האינטראקציה האנושית בעידן הסינתטי.",
+            "עזרה": "אני כאן כדי לתעד. כתוב את מחשבותיך, והן יישמרו לנצח.",
+            "default": "הקלט נקלט. העד רושם."
+        };
+
+        // --- 2. CORE LOGIC ---
+
+        // QR Generation
+        window.onload = function() {
+            new QRCode(document.getElementById("qrcode"), {
+                text: window.location.href,
+                width: 160,
+                height: 160,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+            loadMemory();
+        };
+
+        function toggleTerminal() {
+            const panel = document.getElementById('terminal-panel');
+            panel.classList.toggle('hidden');
+        }
+
+        const chatHistory = document.getElementById('chat-history');
+        const userInput = document.getElementById('user-input');
+        let conversationLog = [];
+
+        userInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
+
+        function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // 1. User Message
+            addMessage("User", text);
+            saveToLog("User", text);
+            userInput.value = '';
+
+            // 2. The Witness Responds (Simulated Delay)
+            showTypingIndicator();
+
+            setTimeout(() => {
+                removeTypingIndicator();
+                const response = decideResponse(text);
+                addMessage("Witness", response);
+                saveToLog("Witness", response);
+            }, 1000 + Math.random() * 500); // 1-1.5 seconds delay for realism
+        }
+
+        // The "Brain" Function
+        function decideResponse(inputText) {
+            // Normalize text (remove special chars, lowercase)
+            const cleanText = inputText.toLowerCase();
+
+            // Search for keywords
+            for (const [key, value] of Object.entries(witnessKnowledge)) {
+                if (cleanText.includes(key) && key !== "default") {
+                    return value;
+                }
+            }
+            return witnessKnowledge["default"];
+        }
+
+        function addMessage(role, text) {
+            const isWitness = role === "Witness";
+            const div = document.createElement('div');
+            div.className = `flex flex-col ${isWitness ? 'items-start' : 'items-end'} animate-[fadeIn_0.3s_ease-out]`;
+
+            div.innerHTML = `
+                <span class="text-[9px] ${isWitness ? 'text-emerald-500' : 'text-emerald-700'} uppercase mb-1 ml-1 tracking-wider">
+                    ${isWitness ? '👁️ העד' : 'אורח'}
+                </span>
+                <div class="${isWitness ? 'bg-emerald-900/30 text-emerald-200 border-emerald-800/50' : 'bg-emerald-950/40 text-emerald-400 border-emerald-900/30'}
+                            border px-4 py-2 rounded-2xl max-w-[85%] text-sm leading-relaxed shadow-lg backdrop-blur-sm">
+                    ${text}
+                </div>
+                <span class="text-[8px] text-emerald-900 mt-1 mr-1 mono">${new Date().toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'})}</span>
+            `;
+            chatHistory.appendChild(div);
+            scrollToBottom();
+        }
+
+        function showTypingIndicator() {
+            const div = document.createElement('div');
+            div.id = "typing-indicator";
+            div.className = "flex flex-col items-start";
+            div.innerHTML = `
+                <span class="text-[9px] text-emerald-500 uppercase mb-1 ml-1">👁️ העד</span>
+                <div class="bg-emerald-900/20 border border-emerald-800/30 px-3 py-2 rounded-2xl">
+                    <div class="flex gap-1">
+                        <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce"></div>
+                        <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                        <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    </div>
+                </div>
+            `;
+            chatHistory.appendChild(div);
+            scrollToBottom();
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if(indicator) indicator.remove();
+        }
+
+        function scrollToBottom() {
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // --- 3. MEMORY & STORAGE ---
+        function saveToLog(role, content) {
+            const entry = { role, content, time: new Date().toISOString() };
+            conversationLog.push(entry);
+            localStorage.setItem('julius_witness_log', JSON.stringify(conversationLog));
+        }
+
+        function loadMemory() {
+            const stored = localStorage.getItem('julius_witness_log');
+            if (stored) {
+                conversationLog = JSON.parse(stored);
+                // Replay history only visually
+                conversationLog.forEach(msg => {
+                    // Simple rebuild without animation for history
+                    const isWitness = msg.role === "Witness";
+                    const div = document.createElement('div');
+                    div.className = `flex flex-col ${isWitness ? 'items-start' : 'items-end'}`;
+                    div.innerHTML = `
+                        <span class="text-[9px] ${isWitness ? 'text-emerald-500' : 'text-emerald-700'} uppercase mb-1 ml-1">
+                            ${isWitness ? '👁️ העד' : 'אורח'}
+                        </span>
+                        <div class="${isWitness ? 'bg-emerald-900/30 text-emerald-200 border-emerald-800/50' : 'bg-emerald-950/40 text-emerald-400 border-emerald-900/30'}
+                                    border px-4 py-2 rounded-2xl max-w-[85%] text-sm opacity-60">
+                            ${msg.content}
+                        </div>
+                    `;
+                    chatHistory.appendChild(div);
+                });
+                scrollToBottom();
+            }
+        }
+
+        function downloadLog() {
+            if (conversationLog.length === 0) return alert("היומן ריק");
+
+            let content = "/// JULIUS WITNESS REPORT ///\n";
+            content += `/// GATE ID: ADAM_PROTOCOL_36 ///\n`;
+            content += `/// EXPORT TIME: ${new Date().toLocaleString()} ///\n\n`;
+
+            conversationLog.forEach(entry => {
+                const time = entry.time.split('T')[1].slice(0,5);
+                content += `[${time}] ${entry.role.toUpperCase()}: ${entry.content}\n`;
+            });
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `witness_log_${Date.now()}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
