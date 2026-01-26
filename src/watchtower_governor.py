@@ -2,6 +2,7 @@ import pickle
 import os
 import time
 from typing import Dict, Any
+from src.kernel.jules_forensic_engine import JulesForensicEngine
 
 # --- 1. NON-TEMPORAL vs. TEMPORAL RULESET (Part 3 & Accounting Emphasis) ---
 # This class establishes the governing constant: the absolute distinction
@@ -196,6 +197,11 @@ if __name__ == "__main__":
             print(f"Final Configuration State: {loaded_config._config_data}")
         except PermissionError as e:
             print(f"Critical Error: {e}")
+
+    print("\n--- FINAL GOVERNANCE AUDIT: JULES FORENSIC SCAN ---")
+    scanner = JulesForensicEngine("beywolf4@gmail.com")
+    scanner.scan_email_archives()
+    scanner.generate_sovereignty_report()
 
     # Clean up (optional)
     # os.remove(GOV_CONSTANT_FILE)
