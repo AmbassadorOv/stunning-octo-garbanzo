@@ -2,6 +2,7 @@ import pickle
 import os
 import time
 from typing import Dict, Any
+from src.kernel.jules_forensic_engine import JulesSovereigntyGuard
 
 # --- 1. NON-TEMPORAL vs. TEMPORAL RULESET (Part 3 & Accounting Emphasis) ---
 # This class establishes the governing constant: the absolute distinction
@@ -173,6 +174,11 @@ if __name__ == "__main__":
     observer.record_stage_start("Hex6F_Step_B")
     time.sleep(0.03)
     observer.record_stage_finish("Hex6F_Step_B", False) # Reality introduces a Quality Delta
+
+    observer.record_stage_start("SOVEREIGNTY_AUDIT")
+    guard = JulesSovereigntyGuard()
+    guard.broadcast_warning()
+    observer.record_stage_finish("SOVEREIGNTY_AUDIT", True)
 
     # 4. FINALIZATION AND CLARIFICATION
     final_adherence = observer.finalize_execution()
