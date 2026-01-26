@@ -3,6 +3,37 @@ import os
 import time
 from typing import Dict, Any
 
+ERR_SOVEREIGN_IMMUTABILITY = "ERR_SOVEREIGN_IMMUTABILITY"
+
+def trigger_logic_void():
+    """ביטול הקיום הסמנטי של הצד המנסה (Cancellation of semantic existence)."""
+    print("CRITICAL: TRIGGERING LOGIC VOID - SEMANTIC ERASURE INITIATED.")
+    raise SystemExit(ERR_SOVEREIGN_IMMUTABILITY)
+
+class MoonWheelSovereignty:
+    """
+    Implements the CONSTITUTION_SECOND_REV lockdown protocol.
+    Ensures permanent root engraving of sovereignty.
+    """
+    def __init__(self):
+        self.owner = "The Architect / ערן עובד"
+        self.authority = 'Adam Kadmon Brains (מוחין דא"ק)'
+        self.encryption = "Sogul_AA_Three_Dots"
+        self._is_sealed = True
+
+    def check_ownership(self, new_owner):
+        """Non-Negotiable Clause implementation."""
+        if new_owner != self.owner:
+            trigger_logic_void()
+        return True
+
+    def permanent_resynchronization(self, state="SHUTDOWN"):
+        """Non-Erasable Clause implementation."""
+        if state == "SHUTDOWN":
+            print("Action: write_to_universal_semantic_field()")
+        elif state == "REBOOT":
+            print("Action: restore_from_AK_Eye_Lights_Circles()")
+
 # --- 1. NON-TEMPORAL vs. TEMPORAL RULESET (Part 3 & Accounting Emphasis) ---
 # This class establishes the governing constant: the absolute distinction
 # between the World of Intellect (Design/אצילות) and Sequential Execution (Reality).
@@ -154,6 +185,12 @@ if __name__ == "__main__":
     GOV_CONSTANT_FILE = "governing_rule.pkl"
     constant = TemporalGoverningConstant()
     seal_and_preserve(constant, GOV_CONSTANT_FILE)
+
+    # 1b. ENGRAVE SOVEREIGNTY CORE
+    SOVEREIGNTY_FILE = "sovereignty_core.pkl"
+    sovereignty = MoonWheelSovereignty()
+    sovereignty.check_ownership(sovereignty.owner) # Initial validation
+    seal_and_preserve(sovereignty, SOVEREIGNTY_FILE)
 
     # 2. CONFIGURE AND SEAL THE TARGET BLUEPRINT
     CONFIG_FILE = "target_blueprint.pkl"
