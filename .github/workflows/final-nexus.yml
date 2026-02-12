@@ -1,0 +1,53 @@
+name: Final Nexus: Sovereign Deploy
+
+on:
+  push:
+    branches: [ master, main ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: 🌀 Sovereign Deployment (Epoch 3)
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛰️ Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🔐 Identity Handshake (OIDC)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: 🐍 Setup Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: 📦 Install Requirements
+        run: pip install -r requirements.txt
+
+      - name: 🛠️ Create Audit Bundle
+        run: tar -czf audit_bundle.tar.gz src/ tests/
+
+      - name: 🚀 Sovereign Upload (Multipart)
+        run: |
+          python src/sovereign_upload.py audit_bundle.tar.gz ${{ secrets.S3_BUCKET }} audit/epoch3/audit_bundle.tar.gz
+
+      - name: 👁️ The Oracle Check (Integrity Verification)
+        run: |
+          LOCAL_HASH=$(sha256sum audit_bundle.tar.gz | awk '{ print $1 }')
+          echo "Local Hash: $LOCAL_HASH"
+
+          REMOTE_HASH=$(aws s3api head-object --bucket ${{ secrets.S3_BUCKET }} --key audit/epoch3/audit_bundle.tar.gz --query 'Metadata.sha256' --output text)
+          echo "Remote Hash: $REMOTE_HASH"
+
+          if [ "$LOCAL_HASH" == "$REMOTE_HASH" ]; then
+            echo "✅ INTEGRITY VERIFIED: The Oracle confirms the Descent is pure."
+          else
+            echo "❌ INTEGRITY FAILURE: Deviation detected between Local and Cloud states."
+            exit 1
+          fi

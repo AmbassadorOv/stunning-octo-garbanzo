@@ -1,104 +1,79 @@
-# World-Party-Federation-Branches-managers
+# World-Party-Federation-Branches-managers: Sovereign Deploy (Epoch 3)
 
-Here’s an interdisciplinary, computational science project like  Unity Theorem, quantum tunneling, and sonographic quantum linguistics theory. This structure is designed for clarity, collaboration, and ease of publication (preprint, journal, or code-based).
+This repository implements the **Final Nexus** automation process, connecting local development with the Sovereign Cloud through a secure, integrity-verified pipeline.
 
+## 🚀 Sovereign Deployment Workflow
 
+The "Final Nexus" workflow (found in `.github/workflows/final-nexus.yml`) automates the deployment of audit bundles to AWS S3 using modern security practices.
 
+### 1. Identity Handshake (OIDC)
+GitHub Actions authenticates with AWS using **OpenID Connect (OIDC)**, eliminating the need for long-lived static credentials (IAM Access Keys).
 
----
+### 2. Sovereign Upload
+The `src/sovereign_upload.py` script performs a parallel multipart upload. It calculates the **SHA256** integrity hash locally and injects it into the S3 object's metadata (`x-amz-meta-sha256`).
 
-## 📁 Recommended GitHub Repository Template
-
-```
-Unity-Theorem-Quantum-Linguistics/
-├── README.md
-├── docs/
-│   ├── theory_overview.md
-│   ├── section8_quantum_ai_architecture.md
-│   ├── section9_sonographic_linguistics.md
-│   └── diagrams/
-│       ├── 126d_singularity.png
-│       └── toroidal_folds.svg
-├── src/
-│   ├── sonographic_simulation/
-│   │   ├── simulate_sonography.py
-│   │   └── __init__.py
-│   ├── hipedots_hyperdunks/
-│   │   ├── blueprint_particle.py
-│   │   └── tunneling_engine.py
-│   └── utils/
-│       └── helpers.py
-├── notebooks/
-│   ├── simulation_demo.ipynb
-│   └── sonographic_shapes_analysis.ipynb
-├── tests/
-│   ├── test_sonography.py
-│   └── test_tunneling.py
-├── data/
-│   ├── sample_sonograms/
-│   │   └── aleph.wav
-│   └── results/
-│       └── simulation_output.csv
-├── LICENSE
-├── .gitignore
-├── requirements.txt
-├── environment.yml
-├── CITATION.cff
-└── references.bib
-```
+### 3. The Oracle Check
+Post-upload, the workflow verifies that the hash recorded in the cloud matches the local calculation, ensuring absolute data integrity during the "Descent" from local to cloud.
 
 ---
 
-## 📄 README.md Template
+## 🔐 הגדרת OIDC Trust ב-AWS (Setup Instructions)
 
-```markdown
-# Unity Theorem & Quantum Linguistics
+כדי שה-Workflow יעבוד, עליך להגדיר Identity Provider בתוך ה-IAM של AWS:
 
-A unified framework integrating quantum information, consciousness, symbolic linguistics (sonographic Hebrew letter modeling), and AI-driven simulation using the HipeDots-Hyperdunks architecture.
+### 1. יצירת ה-Identity Provider
 
-## Features
+* **Provider Type:** OpenID Connect
+* **Provider URL:** `https://token.actions.githubusercontent.com`
+* **Audience:** `sts.amazonaws.com`
 
-- **Quantum-AI Architecture**: HipeDots-Hyperdunks simulation engine for ontological tunneling.
-- **Sonographic Linguistics**: Computational modeling of ancient letter shapes and quantum sound patterns.
-- **Theory & Code**: All sections of the Unity Theorem, with computational blueprints and simulation notebooks.
+### 2. הגדרת ה-Trust Policy של ה-Role
 
-## Repository Structure
+ה-Role שמוגדר ב-`AWS_ROLE_ARN` חייב לאפשר ל-GitHub Actions לגשת אליו. להלן ה-Policy (החלף את הנתונים שלך):
 
-- `docs/` — Theory sections, technical documentation, and diagrams.
-- `src/` — Source code for simulation engines and modeling.
-- `notebooks/` — Jupyter notebooks demonstrating core algorithms and results.
-- `data/` — Sample sonograms and simulation results.
-- `tests/` — Unit tests for core modules.
-- `references.bib` — References and citations.
-- `requirements.txt` / `environment.yml` — Dependencies.
-
-## Getting Started
-
-1. Clone the repository.
-2. Install dependencies:  
-   `pip install -r requirements.txt`  
-   or  
-   `conda env create -f environment.yml`
-3. Run sample notebooks in `notebooks/` to explore the theory and code.
-
-## Citation
-
-If you use this work, please cite via `CITATION.cff` or `references.bib`.
-
-## License
-
-[MIT License](LICENSE)
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::<ACCOUNT_ID>:oidc-provider/token.actions.githubusercontent.com"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringLike": {
+          "token.actions.githubusercontent.com:sub": "repo:<ORG_OR_USER>/<REPO_NAME>:*"
+        },
+        "StringEquals": {
+          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+        }
+      }
+    }
+  ]
+}
 ```
 
 ---
 
-## 💡 Tips
+## 🛠️ Configuration Required
 
-- **Use `docs/` for all theory, design, and diagrams.**
-- **Keep code modular in `src/` for simulation, modeling, and utilities.**
-- **Provide demo notebooks for reproducibility.**
-- **Add a `CITATION.cff` for easy citation in scholarly work.**
-- **Include a `references.bib` for all academic references.**
+The following **GitHub Secrets** must be configured for the workflow:
+
+- `AWS_ROLE_ARN`: The ARN of the IAM Role with the Trust Policy above.
+- `AWS_REGION`: The target AWS region (e.g., `us-east-1`).
+- `S3_BUCKET`: The destination S3 bucket name.
 
 ---
 
+## 📈 Epoch 3 Status: SYSTEM FULLY INTEGRATED
+
+The system is now capable of 100% automated, verified deployments. Every `git push` triggers the Oracle Check to maintain the governing constant between intellect and reality.
+
+---
+
+## 📁 Repository Structure
+
+- `src/` — Core logic including the `watchtower_governor` and `sovereign_upload`.
+- `.github/workflows/` — CI/CD automation.
+- `tests/` — Quality adherence verification.
