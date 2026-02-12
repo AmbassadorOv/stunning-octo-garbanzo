@@ -6,6 +6,7 @@ import sys
 # Define the filenames that will be created by the script
 GOV_CONSTANT_FILE = "governing_rule.pkl"
 CONFIG_FILE = "target_blueprint.pkl"
+SOVEREIGNTY_FILE = "sovereignty_core.pkl"
 
 @pytest.fixture
 def cleanup_test_files():
@@ -13,10 +14,9 @@ def cleanup_test_files():
     # Setup can go here if needed
     yield
     # Teardown: remove the files
-    if os.path.exists(GOV_CONSTANT_FILE):
-        os.remove(GOV_CONSTANT_FILE)
-    if os.path.exists(CONFIG_FILE):
-        os.remove(CONFIG_FILE)
+    for f in [GOV_CONSTANT_FILE, CONFIG_FILE, SOVEREIGNTY_FILE]:
+        if os.path.exists(f):
+            os.remove(f)
 
 def test_full_script_execution_as_black_box(cleanup_test_files):
     """
@@ -44,3 +44,19 @@ def test_full_script_execution_as_black_box(cleanup_test_files):
     # 3. Verify that the final .pkl files were created, confirming the save operations worked
     assert os.path.exists(GOV_CONSTANT_FILE)
     assert os.path.exists(CONFIG_FILE)
+    assert os.path.exists(SOVEREIGNTY_FILE)
+
+def test_sovereignty_immutability():
+    """
+    Verifies that any attempt to alter ownership triggers the logic void.
+    """
+    from src.watchtower_governor import MoonWheelSovereignty, ERR_SOVEREIGN_IMMUTABILITY
+    sov = MoonWheelSovereignty()
+
+    # Valid ownership check should pass
+    assert sov.check_ownership("The Architect / ערן עובד") is True
+
+    # Invalid ownership check should trigger SystemExit with the correct error code
+    with pytest.raises(SystemExit) as excinfo:
+        sov.check_ownership("Imposter")
+    assert str(excinfo.value) == ERR_SOVEREIGN_IMMUTABILITY
