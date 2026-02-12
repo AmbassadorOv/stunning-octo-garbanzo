@@ -1,0 +1,57 @@
+name: Ascension Deployment
+
+on:
+  push:
+    paths:
+      - 'releases/**'
+
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: |
+          pip install boto3
+
+      - name: Upload Releases
+        run: |
+          for file in releases/*; do
+            if [ -f "$file" ]; then
+              python src/s3_multipart_upload.py sovereign-vault "$file"
+            fi
+          done
+
+      - name: Integrity Verification
+        run: |
+          for file in releases/*; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              local_sha=$(sha256sum "$file" | awk '{ print $1 }')
+              s3_sha=$(aws s3api head-object --bucket sovereign-vault --key "$filename" --query 'Metadata.sha256' --output text)
+
+              if [ "$local_sha" != "$s3_sha" ]; then
+                echo "Integrity check failed for $filename! Local: $local_sha, S3: $s3_sha"
+                exit 1
+              else
+                echo "Integrity check passed for $filename."
+              fi
+            fi
+          done
