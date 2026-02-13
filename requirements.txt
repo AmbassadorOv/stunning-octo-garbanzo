@@ -4,3 +4,7 @@ lark
 rdflib
 dash
 dash-cytoscape
+torch
+pandas
+google-api-python-client
+google-auth-oauthlib
