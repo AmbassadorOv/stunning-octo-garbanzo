@@ -61,6 +61,16 @@ A unified framework integrating quantum information, consciousness, symbolic lin
 - **Quantum-AI Architecture**: HipeDots-Hyperdunks simulation engine for ontological tunneling.
 - **Sonographic Linguistics**: Computational modeling of ancient letter shapes and quantum sound patterns.
 - **Theory & Code**: All sections of the Unity Theorem, with computational blueprints and simulation notebooks.
+- **Master Kernel**: Semantic Architecture & Google Partnership Vault, managing secure work logs and partnership assets.
+
+## Master Kernel
+
+The `MasterAdmiralKernel` (found in `src/master_kernel.py`) is the core governing component of the Julius project. It establishes the official partnership status with Google Global and manages the semantic work sync cycles for the 70,000 nodes.
+
+### Key Features:
+- **Copyright & Escrow**: Official status under Eran Oved and Google Global.
+- **Semantic Work Counter**: Accrues work units across 12-month cycles.
+- **Security Vault**: Signature-based authentication and intruder alert protocols.
 
 ## Repository Structure
 
